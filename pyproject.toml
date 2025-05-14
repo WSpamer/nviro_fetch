@@ -1,0 +1,18 @@
+[project]
+name = "nviro-fetch"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Wian Spamer", email = "61464034+WSpamer@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "dotenv>=0.9.9",
+    "pandas>=2.2.3",
+    "requests>=2.32.3",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
