@@ -65,3 +65,11 @@ def get_nviro_data(token):
     ]
 
     return data
+
+
+def correct_reading(reading):
+    datetime = reading["received_at"]
+    data = reading["sensor_data"]
+    for sensor in data:
+        sensor["datetime"] = datetime
+    return data
