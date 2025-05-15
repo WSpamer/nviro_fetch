@@ -23,13 +23,14 @@ def parse_json(response_body):
         sys.exit(1)
 
 
-def fetch_login():
+def fetch_login(print_response=False):
     JWT_ENDPOINT = "https://ant.nvirosense.com/api/v1/login"
 
     dotenv.load_dotenv()
     NVIRO_USERNAME = os.environ.get("NVIRO_USERNAME")
     NVIRO_PASSWORD = os.environ.get("NVIRO_PASSWORD")
-    print(f"[INFO] Authenticating with {JWT_ENDPOINT}...")
+    if print_response:
+        print(f"[INFO] Authenticating with {JWT_ENDPOINT}...")
     headers = {"Content-Type": "application/json"}
     payload = {
         "user": {
@@ -42,26 +43,29 @@ def fetch_login():
     return response
 
 
-def authenticate():
+def authenticate(print_response=False):
 
     retries = 0
     MAX_RETRIES = 3
     RETRY_DELAY = 2  # seconds
     while True:
         try:
-            response = fetch_login()
+            response = fetch_login(print_response=print_response)
             if response.status_code == 200:
                 json_response = parse_json(response.text)
-                print(json_response)
+
                 jwt_token = json_response.get("token")
-                print(jwt_token)
+                if print_response:
+                    print(json_response)
+                    print(jwt_token)
                 if not jwt_token:
                     auth_header = response.headers.get("Authorization")
                     if auth_header:
                         parts = auth_header.split(" ")
                         if len(parts) >= 2:
                             jwt_token = parts[-1]
-                            print(jwt_token)
+                            if print_response:
+                                print(jwt_token)
                 if jwt_token:
                     print("[SUCCESS] Authentication successful! Token received.")
                     return jwt_token
