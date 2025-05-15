@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Wian Spamer", email = "61464034+WSpamer@users.noreply.github.com" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "dotenv>=0.9.9",
     "pandas>=2.2.3",
@@ -16,3 +16,8 @@ dependencies = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+]
