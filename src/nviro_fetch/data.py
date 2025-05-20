@@ -67,9 +67,55 @@ def get_nviro_data(token):
     return data
 
 
+def extract_readings(readings):
+    sensor_list = []
+    for reading in readings:
+        datetime = reading["received_at"]
+        devEui = reading["devEui"]
+        data = reading["sensor_data"]
+        for sensor in data:
+            params = {
+                "sensor_name": sensor["sensor_name"],
+                "unit": sensor["unit"],
+                "value": sensor["value"],
+                "datetime": datetime,
+                "devEui": devEui,
+            }
+            sensor_list.append(params)
+    return sensor_list
+
+
+def get_sensor_readings(readings):
+    readings = extract_readings(readings)
+    sensors = [reading["sensor_name"] for reading in readings]
+    sensors = list(set(sensors))
+
+    sensor_readings = []
+    for sensor in sensors:
+        sensor_reading = [
+            reading for reading in readings if reading["sensor_name"] == sensor
+        ]
+        # print(sensor_reading)
+
+        params = {
+            "sensor_name": sensor,
+            "readings": sensor_reading,
+        }
+        sensor_readings.append(params)
+
+    return sensor_readings
+
+
 def correct_reading(reading):
     datetime = reading["received_at"]
+    devEui = reading["devEui"]
     data = reading["sensor_data"]
+    sensor_readings = []
     for sensor in data:
         sensor["datetime"] = datetime
+        sensor["devEui"] = devEui
+        # print("Sensor")
+        # print(len(sensor))
+        # sensor_readings.append(sensor)
+
     return data
