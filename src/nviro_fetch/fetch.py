@@ -74,11 +74,16 @@ def fetch_sensor_readings(
     if is_print:
         log_response(response, "Sensor Readings Fetch")
     if response.status_code == 200:
-        readings = parse_json(response.text)
+        readings_data = parse_json(response.text)
         if is_print:
             print("[SUCCESS] Sensor readings fetched successfully!")
-            print(json.dumps(readings, indent=4))
-        return readings["sensor_readings"]
+            print(json.dumps(readings_data, indent=4))
+        readings = readings_data["sensor_readings"]
+
+        for reading in readings:
+            reading["devEui"] = devEui
+        return readings
+        # return readings_data
     else:
         print(
             f"[ERROR] Failed to fetch sensor readings! Status: {response.status_code}"
