@@ -52,7 +52,7 @@ def fetch_device_sensors(jwt_token, devEui, is_print=False):
 
 
 def fetch_sensor_readings(
-    jwt_token, devEui, start_date, end_date, limit=10, page=1, is_print=False
+    jwt_token, devEui, start_date, end_date, limit=1000000000000, page=1, is_print=False
 ):
     DEVICES_ENDPOINT = "https://ant.nvirosense.com/api/v1/devices"
     sensor_readings_endpoint = f"{DEVICES_ENDPOINT}/{devEui}/sensor_readings"
