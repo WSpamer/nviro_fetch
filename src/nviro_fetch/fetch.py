@@ -3,6 +3,15 @@ import json
 from nviro_fetch.auth import log_response, parse_json
 
 
+def valid_token(devices):
+    bad_response = {"login": "", "password": None}  # noqa: F821
+    valid = devices == bad_response
+    if valid:
+        print(f"[ERROR] Token is expired or invalid! Status: {valid}")
+        return False
+    return True
+
+
 # Function to fetch devices using JWT token
 def fetch_devices(jwt_token, is_print=False):
     DEVICES_ENDPOINT = "https://ant.nvirosense.com/api/v1/devices"
@@ -17,9 +26,12 @@ def fetch_devices(jwt_token, is_print=False):
         log_response(response, "Fetch Devices")
     if response.status_code == 200:
         devices = parse_json(response.text)
+        valid = valid_token(devices)
+        if not valid:
+            return []
         if is_print:
             print("[SUCCESS] Devices fetched successfully!")
-        if is_print:
+            print("[Data] \n -------------------")
             print(json.dumps(devices, indent=4))
         return devices
     else:
@@ -41,9 +53,11 @@ def fetch_device_sensors(jwt_token, devEui, is_print=False):
         log_response(response, "Fetch Devices")
     if response.status_code == 200:
         devices = parse_json(response.text)
+        valid = valid_token(devices)
+        if not valid:
+            return []
         if is_print:
             print("[SUCCESS] Devices fetched successfully!")
-        if is_print:
             print(json.dumps(devices, indent=4))
         return devices["sensors"]
     else:
@@ -75,6 +89,9 @@ def fetch_sensor_readings(
         log_response(response, "Sensor Readings Fetch")
     if response.status_code == 200:
         readings_data = parse_json(response.text)
+        valid = valid_token(readings_data)
+        if not valid:
+            return []
         if is_print:
             print("[SUCCESS] Sensor readings fetched successfully!")
             print(json.dumps(readings_data, indent=4))
