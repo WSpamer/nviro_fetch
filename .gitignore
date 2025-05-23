@@ -10,5 +10,7 @@ wheels/
 .venv
 .env
 
+# General
+*.log
 # Jupyter Notebook checkpoints
 *.ipynb
