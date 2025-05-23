@@ -1,5 +1,4 @@
 import json
-import os
 import sys
 import time
 
@@ -7,10 +6,12 @@ import dotenv
 import requests
 from loguru import logger
 
+from env import env_common, env_login
+
 __all__ = ["authenticate"]
 dotenv.load_dotenv()
-path = os.environ.get("PROJECT_PATH")
-logger.add(f"{path}/logs/auth.log")
+path = env_common(name="log")
+logger.add(f"{path}/auth.log")
 # logger_auth = logger.bind(name="auth")
 
 
@@ -32,15 +33,14 @@ def parse_json(response_body):
 def fetch_login():
     JWT_ENDPOINT = "https://ant.nvirosense.com/api/v1/login"
 
-    dotenv.load_dotenv()
-    NVIRO_USERNAME = os.environ.get("NVIRO_USERNAME")
-    NVIRO_PASSWORD = os.environ.get("NVIRO_PASSWORD")
+    username, password = env_login()
+
     logger.info(f"Authenticating with {JWT_ENDPOINT}...")
     headers = {"Content-Type": "application/json"}
     payload = {
         "user": {
-            "login": NVIRO_USERNAME,
-            "password": NVIRO_PASSWORD,
+            "login": username,
+            "password": password,
         }
     }
     response = requests.post(JWT_ENDPOINT, json=payload, headers=headers)
