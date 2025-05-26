@@ -6,12 +6,26 @@ import dotenv
 import requests
 from loguru import logger
 
-from env import env_common, env_login
+from env import env_debug, env_login, env_path
 
 __all__ = ["authenticate"]
 dotenv.load_dotenv()
-path = env_common(name="log")
-logger.add(f"{path}/auth.log")
+
+# Configure logger
+logger.remove()  # Remove default logger
+log_level = env_debug("log_level")
+
+logger.add(sys.stderr, level=log_level)  # Add stderr logger for debug output
+
+# Add file logger for authentication logs
+path = env_path(name="log")
+logger.add(
+    f"{path}/auth.log",
+    level=log_level,
+    rotation="10 MB",
+    retention="10 days",
+    encoding="utf-8",
+)
 # logger_auth = logger.bind(name="auth")
 
 
