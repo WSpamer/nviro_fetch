@@ -1,16 +1,24 @@
-import requests
 import json
-from nviro_fetch.auth import log_response, parse_json
+
+import requests
+from loguru import logger
+
 from common.env import env_endpoints
+from nviro_fetch.auth import log_response, parse_json
 
 
 def valid_token(devices):
     bad_response = {"login": "", "password": None}  # noqa: F821
     valid = devices == bad_response
     if valid:
-        print(f"[ERROR] Token is expired or invalid! Status: {valid}")
+        logger.error(f"Token is expired or invalid! Status: {valid}")
         return False
     return True
+
+
+def log_failed(name, response):
+    logger.error(f"[ERROR] Failed to fetch {name}! Status: {response.status_code}")
+    logger.debug("Fetching failed! Returning empty list.")
 
 
 # Function to fetch devices using JWT token
@@ -20,23 +28,23 @@ def fetch_devices(jwt_token, is_print=False):
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
     }
-    if is_print:
-        print(f"[INFO] Fetching devices from {DEVICES_ENDPOINT}...")
+    logger.info(f"Fetching devices from {DEVICES_ENDPOINT}...")
     response = requests.get(DEVICES_ENDPOINT, headers=headers)
-    if is_print:
-        log_response(response, "Fetch Devices")
+    logger.info(f"Fetching: Status {response.status_code}")
     if response.status_code == 200:
         devices = parse_json(response.text)
         valid = valid_token(devices)
         if not valid:
+            logger.debug("Invalid token! Returning empty list.")
             return []
+        logger.success("Devices fetched successfully!")
         if is_print:
-            print("[SUCCESS] Devices fetched successfully!")
             print("[Data] \n -------------------")
             print(json.dumps(devices, indent=4))
         return devices
     else:
-        print(f"[ERROR] Failed to fetch devices! Status: {response.status_code}")
+        logger.error(f"Failed to fetch devices! Status: {response.status_code}")
+        logger.debug("Fetching failed! Returning empty list.")
         return []
 
 
@@ -48,23 +56,25 @@ def fetch_device_sensors(jwt_token, devEui, is_print=False):
         "Content-Type": "application/json",
     }
     url_endpoint = f"{DEVICES_ENDPOINT}/{devEui}/sensors"
-    if is_print:
-        print(f"[INFO] Fetching devices from {url_endpoint}...")
+    logger.info(f"Fetching devices from {url_endpoint}...")
     response = requests.get(url_endpoint, headers=headers)
     if is_print:
-        log_response(response, "Fetch Devices")
+        log_response(response, "Fetch Device Sensors")
     if response.status_code == 200:
-        devices = parse_json(response.text)
-        valid = valid_token(devices)
+        device_sensors = parse_json(response.text)
+        valid = valid_token(device_sensors)
         if not valid:
+            logger.debug("Invalid token! Returning empty list.")
             return []
+        logger.success("Device Sensors fetched successfully!")
         if is_print:
-            print("[SUCCESS] Devices fetched successfully!")
-            print(json.dumps(devices, indent=4))
-        return devices["sensors"]
+            print("[Data] \n -------------------")
+            print(json.dumps(device_sensors, indent=4))
+        return device_sensors["sensors"]
     else:
-        print(f"[ERROR] Failed to fetch devices! Status: {response.status_code}")
-        return {}
+        logger.error(f"Failed to fetch device sensors! Status: {response.status_code}")
+        logger.debug("Fetching failed! Returning empty list.")
+        return []
 
 
 def fetch_sensor_readings(
@@ -82,10 +92,9 @@ def fetch_sensor_readings(
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
     }
-    if is_print:
-        print(
-            f"[INFO] Fetching sensor readings from {sensor_readings_endpoint} with params {params}..."
-        )
+    logger.info(
+        f"Fetching sensor readings from {sensor_readings_endpoint} with params {params}..."
+    )
     response = requests.get(sensor_readings_endpoint, headers=headers, params=params)
     if is_print:
         log_response(response, "Sensor Readings Fetch")
@@ -93,9 +102,11 @@ def fetch_sensor_readings(
         readings_data = parse_json(response.text)
         valid = valid_token(readings_data)
         if not valid:
+            logger.debug("Invalid token! Returning empty list.")
             return []
+        logger.success("Sensor readings fetched successfully!")
         if is_print:
-            print("[SUCCESS] Sensor readings fetched successfully!")
+            print("[Data] \n -------------------")
             print(json.dumps(readings_data, indent=4))
         readings = readings_data["sensor_readings"]
 
@@ -104,7 +115,6 @@ def fetch_sensor_readings(
         return readings
         # return readings_data
     else:
-        print(
-            f"[ERROR] Failed to fetch sensor readings! Status: {response.status_code}"
-        )
-        return {}
+        logger.error(f"Failed to fetch sensor readings! Status: {response.status_code}")
+        logger.debug("Fetching failed! Returning empty list.")
+        return []
