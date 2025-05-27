@@ -42,6 +42,18 @@ def env_login():
     return username, password
 
 
+def env_endpoints(name="jwt"):
+    JWT_ENDPOINT = "https://ant.nvirosense.com/api/v1/login"
+    DEVICES_ENDPOINT = "https://ant.nvirosense.com/api/v1/devices"
+
+    ans = {
+        "jwt": JWT_ENDPOINT,
+        "devices": DEVICES_ENDPOINT,
+    }
+
+    return ans[name]
+
+
 def testing():
     path = env_path("logs")
     print(f"path: {path}")

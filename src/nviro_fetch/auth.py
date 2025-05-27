@@ -6,13 +6,11 @@ import dotenv
 import requests
 from loguru import logger
 
-from common.env import env_debug, env_login, env_path
+from common.env import env_debug, env_endpoints, env_login
 from common.log import config_logfile
 
 __all__ = ["authenticate"]
 dotenv.load_dotenv()
-
-# logger_auth = logger.bind(name="auth")
 
 
 # Logging function (minimal logging)
@@ -31,7 +29,7 @@ def parse_json(response_body):
 
 
 def fetch_login():
-    JWT_ENDPOINT = "https://ant.nvirosense.com/api/v1/login"
+    JWT_ENDPOINT = env_endpoints("jwt")
 
     username, password = env_login()
 

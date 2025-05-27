@@ -1,6 +1,7 @@
 import requests
 import json
 from nviro_fetch.auth import log_response, parse_json
+from common.env import env_endpoints
 
 
 def valid_token(devices):
@@ -14,7 +15,7 @@ def valid_token(devices):
 
 # Function to fetch devices using JWT token
 def fetch_devices(jwt_token, is_print=False):
-    DEVICES_ENDPOINT = "https://ant.nvirosense.com/api/v1/devices"
+    DEVICES_ENDPOINT = env_endpoints("devices")
     headers = {
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
@@ -40,7 +41,8 @@ def fetch_devices(jwt_token, is_print=False):
 
 
 def fetch_device_sensors(jwt_token, devEui, is_print=False):
-    DEVICES_ENDPOINT = "https://ant.nvirosense.com/api/v1/devices"
+    DEVICES_ENDPOINT = env_endpoints("devices")
+
     headers = {
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
@@ -68,7 +70,7 @@ def fetch_device_sensors(jwt_token, devEui, is_print=False):
 def fetch_sensor_readings(
     jwt_token, devEui, start_date, end_date, limit=1000000000000, page=1, is_print=False
 ):
-    DEVICES_ENDPOINT = "https://ant.nvirosense.com/api/v1/devices"
+    DEVICES_ENDPOINT = env_endpoints("devices")
     sensor_readings_endpoint = f"{DEVICES_ENDPOINT}/{devEui}/sensor_readings"
     params = {
         "start_date": start_date,
