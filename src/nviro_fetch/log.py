@@ -2,6 +2,8 @@ import logging
 
 from loguru import logger
 
+from common.log import config_logfile, config_logger
+
 
 def basic_logger():
     logger = logging.getLogger(__name__)

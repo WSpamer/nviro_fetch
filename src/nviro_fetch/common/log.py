@@ -1,8 +1,9 @@
+import os
 import sys
 
 from loguru import logger
 
-from common.env import env_debug, env_path
+from nviro_fetch.common.env import env_debug, env_path
 
 
 def config_log_level(log_level="") -> str:
@@ -24,9 +25,12 @@ def config_logger(log_level: str = "") -> None:
 
 def config_logfile(filename: str = "nviro_fetch.log") -> None:
     log_path = env_path("log")
-    logger.add(
-        f"{log_path}/{filename}",
-        rotation="1 MB",
-        retention="7 days",
-        level=config_log_level(),
-    )
+    v = os.environ.get("PWD")
+    print(v)
+    # print(f"Log path: {log_path}")
+    # logger.add(
+    #     f"{log_path}/{filename}",
+    #     rotation="1 MB",
+    #     retention="7 days",
+    #     level=config_log_level(),
+    # )

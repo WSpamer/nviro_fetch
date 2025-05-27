@@ -3,8 +3,8 @@ import json
 import requests
 from loguru import logger
 
-from common.env import env_endpoints
 from nviro_fetch.auth import log_response, parse_json
+from nviro_fetch.common.env import env_endpoints
 
 
 def valid_token(devices):

@@ -6,8 +6,8 @@ import dotenv
 import requests
 from loguru import logger
 
-from common.env import env_debug, env_endpoints, env_login
-from common.log import config_logfile
+from nviro_fetch.common.env import env_debug, env_endpoints, env_login
+from nviro_fetch.common.log import config_logfile
 
 __all__ = ["authenticate"]
 dotenv.load_dotenv()
