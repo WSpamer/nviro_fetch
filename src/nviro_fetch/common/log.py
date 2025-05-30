@@ -23,14 +23,14 @@ def config_logger(log_level: str = "") -> None:
     )
 
 
-def config_logfile(filename: str = "nviro_fetch.log") -> None:
-    log_path = env_path("log")
-    v = os.environ.get("PWD")
-    print(v)
+def config_logfile(filename: str = "log.log") -> None:
+    path_project = os.environ.get("PWD")
+    log_path = f"{path_project}/logs/{filename}.log"
+    # print(log_path)
     # print(f"Log path: {log_path}")
-    # logger.add(
-    #     f"{log_path}/{filename}",
-    #     rotation="1 MB",
-    #     retention="7 days",
-    #     level=config_log_level(),
-    # )
+    logger.add(
+        log_path,
+        rotation="1 MB",
+        retention="7 days",
+        level=config_log_level(),
+    )
