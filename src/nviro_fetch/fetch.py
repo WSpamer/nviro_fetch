@@ -3,17 +3,8 @@ import json
 import requests
 from loguru import logger
 
-from nviro_fetch.auth import log_response, parse_json
+from nviro_fetch.auth import log_response, parse_json, valid_token
 from nviro_fetch.common.env import env_endpoints
-
-
-def valid_token(devices):
-    bad_response = {"login": "", "password": None}  # noqa: F821
-    valid = devices == bad_response
-    if valid:
-        logger.error(f"Token is expired or invalid! Status: {valid}")
-        return False
-    return True
 
 
 def log_failed(name, response):

@@ -28,6 +28,15 @@ def parse_json(response_body):
         sys.exit(1)
 
 
+def valid_token(devices):
+    bad_response = {"login": "", "password": None}  # noqa: F821
+    valid = devices == bad_response
+    if valid:
+        logger.error(f"Token is expired or invalid! Status: {valid}")
+        return False
+    return True
+
+
 def fetch_login():
     JWT_ENDPOINT = env_endpoints("jwt")
 
