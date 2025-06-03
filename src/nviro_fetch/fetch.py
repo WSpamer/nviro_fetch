@@ -21,6 +21,31 @@ def log_failed(name, response):
     logger.debug("Fetching failed! Returning empty list.")
 
 
+def fetch_nviro(jwt_token, endpoint, is_print=False):
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Content-Type": "application/json",
+    }
+    logger.info(f"Fetching data from {endpoint}...")
+    response = requests.get(endpoint, headers=headers)
+    logger.info(f"Fetching: Status {response.status_code}")
+    if response.status_code == 200:
+        data = parse_json(response.text)
+        valid = valid_token(data)
+        if not valid:
+            logger.debug("Invalid token! Returning empty list.")
+            return []
+        logger.success("Data fetched successfully!")
+        if is_print:
+            print("[Data] \n -------------------")
+            print(json.dumps(data, indent=4))
+        return data
+    else:
+        logger.error(f"Failed to fetch devices! Status: {response.status_code}")
+        logger.debug("Fetching failed! Returning empty list.")
+        return []
+
+
 # Function to fetch devices using JWT token
 def fetch_devices(jwt_token, is_print=False):
     DEVICES_ENDPOINT = env_endpoints("devices")
