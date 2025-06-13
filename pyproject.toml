@@ -11,6 +11,7 @@ dependencies = [
     "dotenv>=0.9.9",
     "loguru>=0.7.3",
     "pandas>=2.2.3",
+    "pytest>=8.4.0",
     "requests>=2.32.3",
 ]
 
@@ -21,4 +22,5 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "jupyter>=1.1.1",
+    "matplotlib>=3.10.3",
 ]
