@@ -1,5 +1,6 @@
-from nviro_fetch.fetch import fetch_device_sensors, fetch_devices
 import pandas as pd
+
+from nviro_fetch.fetch import fetch_device_sensors, fetch_devices, fetch_sensor_readings
 
 
 def get_sensors(token, devices: list):
@@ -119,3 +120,24 @@ def correct_reading(reading):
         # sensor_readings.append(sensor)
 
     return data
+
+
+def get_device_readings(
+    jwt_token, devEui, start_date, end_date, limit=1000000000000, page=1, is_print=False
+):
+    readings_data = fetch_sensor_readings(
+        jwt_token,
+        devEui,
+        start_date,
+        end_date,
+        limit=limit,
+        page=page,
+        is_print=is_print,
+    )
+    sensor_readings = get_sensor_readings(readings_data)
+    readings = []
+    for sensor_reading in sensor_readings:
+        for reading in sensor_reading["readings"]:
+            readings.append(reading)
+
+    return readings
