@@ -54,6 +54,18 @@ def env_endpoints(name="jwt"):
     return ans[name]
 
 
+def env_global():
+    """
+    Returns global settings for the application.
+    """
+    # Example global settings, can be extended as needed
+    ans = {
+        "start_date": "2025-05-01 00:00:00",
+    }
+
+    return ans
+
+
 def testing():
     path = env_path("logs")
     print(f"path: {path}")
