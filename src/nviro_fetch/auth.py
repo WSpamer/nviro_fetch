@@ -37,10 +37,22 @@ def valid_token(devices):
     return True
 
 
-def fetch_login():
+def fetch_login(username=None, password=None):
     JWT_ENDPOINT = env_endpoints("jwt")
 
-    username, password = env_login()
+    # Check if username and password are provided
+    logger.info("Checking if username and password are provided...")
+    login_given = username is not None and password is not None
+
+    # If username and password are not provided, fetch from environment variables
+    if not login_given:
+        logger.info("Fetching username and password from environment variables...")
+        username, password = env_login()
+        if not username or not password:
+            logger.error("Username or password is not set in environment variables!")
+            raise ValueError(
+                "Username or password is not set in environment variables!"
+            )
 
     logger.info(f"Authenticating with {JWT_ENDPOINT}...")
     headers = {"Content-Type": "application/json"}
@@ -55,14 +67,14 @@ def fetch_login():
     return response
 
 
-def authenticate():
+def authenticate(username=None, password=None):
 
     retries = 0
     MAX_RETRIES = 3
     RETRY_DELAY = 2  # seconds
     while True:
         try:
-            response = fetch_login()
+            response = fetch_login(username=username, password=password)
             if response.status_code == 200:
                 json_response = parse_json(response.text)
 

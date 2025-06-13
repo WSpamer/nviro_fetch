@@ -2,6 +2,7 @@ import os
 import pathlib
 
 import dotenv
+from loguru import logger
 
 dotenv.load_dotenv()
 
@@ -32,14 +33,20 @@ def env_debug(name="debug"):
 
 
 def env_login():
+
+    """
+    Returns the username and password for authentication.
+    """
+    logger.info("Loading environment variables for login...")
     username = os.environ.get("NVIRO_USERNAME")
     password = os.environ.get("NVIRO_PASSWORD")
-    # ans = {
-    #     "username": username,
-    #     "password": password,
-    # }
-
-    return username, password
+    login_given = username is not None and password is not None
+    if login_given:
+        return username, password
+    else:
+        logger.info("Username and password environment variables not set")
+        return None, None
+    
 
 
 def env_endpoints(name="jwt"):
