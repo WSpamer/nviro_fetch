@@ -14,3 +14,6 @@ wheels/
 *.log
 # Jupyter Notebook checkpoints
 *.ipynb
+
+# Data files
+*.csv
