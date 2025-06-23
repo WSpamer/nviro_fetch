@@ -52,10 +52,14 @@ def env_login():
 def env_endpoints(name="jwt"):
     JWT_ENDPOINT = "https://ant.nvirosense.com/api/v1/login"
     DEVICES_ENDPOINT = "https://ant.nvirosense.com/api/v1/devices"
+    AREA_ENDPOINT = "https://ant.nvirosense.com/api/v1/areas"
+    FORECAST_ENDPOINT = "https://ant.nvirosense.com/api/v1/forecasts/latest"
 
     ans = {
         "jwt": JWT_ENDPOINT,
         "devices": DEVICES_ENDPOINT,
+        "areas": AREA_ENDPOINT,
+        "forecasts": FORECAST_ENDPOINT,
     }
 
     return ans[name]
