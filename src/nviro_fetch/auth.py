@@ -62,7 +62,11 @@ def fetch_login(username=None, password=None):
             "password": password,
         }
     }
+    if not username or not password:
+        logger.error("Username or password is empty!")
+        raise ValueError("Username or password is empty!")
     response = requests.post(JWT_ENDPOINT, json=payload, headers=headers)
+    logger.info(f"Username: {username}, Password: {password}")
 
     return response
 
