@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Wian Spamer", email = "61464034+WSpamer@users.noreply.github.com" }
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 dependencies = [
     "dotenv>=0.9.9",
     "loguru>=0.7.3",
