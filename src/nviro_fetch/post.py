@@ -8,8 +8,8 @@ from nviro_fetch.auth import log_response, parse_json, valid_token
 
 # TODO: Adapt this to turn on/off relays for the controller
 # relay options: r01 | ro2
-def post_controller(jwt_token, device, relay="ro1", is_print=False):
-    devEui = device["devEui"]
+def post_controller(jwt_token, devEui, relay="ro1", is_print=False):
+    # devEui = device["devEui"]
     if not devEui:
         logger.error("Device does not have a valid devEui!")
         return []
@@ -31,7 +31,8 @@ def post_controller(jwt_token, device, relay="ro1", is_print=False):
         logger.info("Setting relay ro2 to ON")
     else:
         logger.error(f"Invalid relay option: {relay}. Must be 'ro1' or 'ro2'.")
-        return []
+        raise ValueError("Invalid relay option. Must be 'ro1' or 'ro2'.")
+        # return []
     body = {"ro1_state": ro1, "ro2_state": ro2}
     logger.info(f"body {body}")
     response = requests.post(endpoint, headers=headers, json=body)
