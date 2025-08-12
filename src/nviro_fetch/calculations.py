@@ -8,6 +8,10 @@ def calculate_utah_chill_units(temperature_celsius):
     Returns:
         float: The corresponding Utah Chill Units for that hour.
     """
+
+    if isinstance(temperature_celsius, (int, float, complex)) is not True:
+        return temperature_celsius
+
     if temperature_celsius < 1.4:  # Below this temperature, no chill is accumulated
         return 0.0  # No chill
     # Define the ranges for chill accumulation
