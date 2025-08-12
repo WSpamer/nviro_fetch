@@ -2,6 +2,9 @@ from loguru import logger
 
 # from nviro_fetch import auth, fetch, data  # noqa: F403
 from .auth import authenticate  # noqa: F401
+from .calculations import (
+    calculate_utah_chill_units,  # noqa: F401
+)
 from .data import extract_readings, get_nviro_data, get_sensor_readings  # noqa: F401
 from .fetch import (
     fetch_device_sensors,  # noqa: F401
