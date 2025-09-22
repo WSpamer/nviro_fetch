@@ -17,3 +17,6 @@ wheels/
 
 # Data files
 *.csv
+
+# MacOS
+.DS_Store
