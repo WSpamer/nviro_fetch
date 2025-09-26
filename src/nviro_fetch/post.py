@@ -74,6 +74,7 @@ def post_controller(
     is_print: bool = False,
 ) -> dict:
     # devEui = device["devEui"]
+    msg=""
     link_base = controller_link(devEui)
     endpoint = controller_endpoint(link_base, relay=relay, signal_type=signal_type)
     headers = {
@@ -86,22 +87,36 @@ def post_controller(
 
     if safety:
         msg = "Posting disabled: Please set safery to true"
+        ans = {"msg": msg, "data": {}, "status": "success"}
         print(msg)
-        return {"error": msg}
+        return ans
+
     response = requests.post(endpoint, headers=headers, json=body)
     logger.info(f"Posting: Status {response.status_code}")
     if response.status_code == 202:
         data = parse_json(response.text)
         valid = valid_token(data)
+
         if not valid:
-            logger.debug("Invalid token! Returning empty list.")
-            return {}
-        logger.success("Data fetched successfully!")
+            msg = "Invalid token! Returning empty list."
+            logger.debug(msg)
+            ans = {"msg": msg, "data": {}, "status": "error"}
+            return ans
+        msg = "Data fetched successfully!"
+        logger.success(msg)
         if is_print:
             print("[Data] \n -------------------")
             print(json.dumps(data, indent=4))
-        return data
+
+        ans = {
+            "msg": msg, 
+            "data": data,
+            "status": "success"
+        }
+        return ans
     else:
-        logger.error(f"Failed to fetch devices! Status: {response.status_code}")
+        msg = f"Failed to fetch devices! Status: {response.status_code}"
+        logger.error(msg)
         logger.debug("Fetching failed! Returning empty list.")
-        return {}
+        ans = {"msg": msg, "data": {}, "status": "success"}
+        return ans
