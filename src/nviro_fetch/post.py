@@ -6,15 +6,15 @@ from loguru import logger
 from nviro_fetch.auth import log_response, parse_json, valid_token
 
 
-def controller_link(devEui):
+def controller_link(devEui: str) -> str:
     if not devEui:
         logger.error("Device does not have a valid devEui!")
-        return []
+        return ""
     link_base = f"https://ant.nvirosense.com/api/v1/nss500/devices/{devEui}"
     return link_base
 
 
-def controller_latch_body(relay="ro1"):
+def controller_latch_body(relay: str = "ro1"):
     if relay == "ro1":
         ro1 = "ON"
         ro2 = "no_action"
@@ -31,7 +31,7 @@ def controller_latch_body(relay="ro1"):
     return body
 
 
-def controller_toggle_endpoint(link_base, relay="ro1"):
+def controller_toggle_endpoint(link_base: str, relay: str = "ro1") -> str:
 
     if relay == "ro1":
         endpoint = f"{link_base}/toggle_ro1"
@@ -46,7 +46,9 @@ def controller_toggle_endpoint(link_base, relay="ro1"):
         raise ValueError("Invalid relay option. Must be 'ro1' or 'ro2'.")
 
 
-def controller_endpoint(link_base, relay="ro1", signal_type="toggle"):
+def controller_endpoint(
+    link_base: str, relay: str = "ro1", signal_type: str = "toggle"
+) -> str:
 
     if signal_type == "toggle":
         endpoint = controller_toggle_endpoint(link_base, relay=relay)
@@ -64,8 +66,13 @@ def controller_endpoint(link_base, relay="ro1", signal_type="toggle"):
 # relay options: r01 | ro2
 # Type options: toggle | latch
 def post_controller(
-    jwt_token, devEui, signal_type="toggle", relay="ro1", is_print=False
-):
+    jwt_token: str,
+    devEui: str,
+    signal_type: str = "toggle",
+    relay: str = "ro1",
+    safety: bool = True,
+    is_print: bool = False,
+) -> dict:
     # devEui = device["devEui"]
     link_base = controller_link(devEui)
     endpoint = controller_endpoint(link_base, relay=relay, signal_type=signal_type)
@@ -76,6 +83,11 @@ def post_controller(
     logger.info(f"Activating controller {devEui}...")
     body = controller_latch_body(relay=relay) if signal_type == "toggle" else {}
     logger.info(f"body {body}")
+
+    if safety:
+        msg = "Posting disabled: Please set safery to true"
+        print(msg)
+        return {"error": msg}
     response = requests.post(endpoint, headers=headers, json=body)
     logger.info(f"Posting: Status {response.status_code}")
     if response.status_code == 202:
@@ -83,7 +95,7 @@ def post_controller(
         valid = valid_token(data)
         if not valid:
             logger.debug("Invalid token! Returning empty list.")
-            return []
+            return {}
         logger.success("Data fetched successfully!")
         if is_print:
             print("[Data] \n -------------------")
@@ -92,4 +104,4 @@ def post_controller(
     else:
         logger.error(f"Failed to fetch devices! Status: {response.status_code}")
         logger.debug("Fetching failed! Returning empty list.")
-        return []
+        return {}
